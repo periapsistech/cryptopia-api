@@ -1,0 +1,26 @@
+{
+  "name": "cryptopia-api",
+  "version": "1.1.9",
+  "description": "Node.js Module for accessing both Public and Private Cryptopia APIs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/periapsistech/node-crpytopia.git"
+  },
+  "keywords": [
+    "cryptopia"
+  ],
+  "author": "Periapsis Technology, Inc. <contact@periapsistech.com> (http://www.periapsistech.com)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/periapsistech/node-crpytopia/issues"
+  },
+  "homepage": "https://github.com/periapsistech/node-crpytopia#readme",
+  "dependencies": {
+    "crypto": "^1.0.1",
+    "request": "^2.83.0"
+  }
+}
