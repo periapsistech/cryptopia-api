@@ -2,8 +2,6 @@ const crypto = require('crypto');
 const request = require('request');
 
 const HOST_URL = "https://www.cryptopia.co.nz/api";
-const PUB_ENDPOINTS = ["GetCurrencies", "GetTradePairs", "GetMarkets", "GetMarket", "GetMarketHistory", "GetMarketOrders"];
-const PRIV_ENDPOINTS = ["GetBalance", "GetDepositAddress", "GetOpenOrders", "GetTradeHistory", "GetTransactions", "SubmitTrade", "CancelTrade", "SubmitTip"];
 
 let Cryptopia = function () {
     let options = {

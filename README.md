@@ -1,4 +1,4 @@
-# node-crpytopia
+# node-cryptopia
 Asynchronous Node.js Module for [Cryptopia](https://www.cryptopia.co.nz) Public and Private APIs
 
 

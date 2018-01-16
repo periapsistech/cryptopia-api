@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/periapsistech/node-crpytopia.git"
+    "url": "git+https://github.com/periapsistech/node-cryptopia.git"
   },
   "keywords": [
     "cryptopia"
@@ -16,9 +16,9 @@
   "author": "Periapsis Technology, Inc. <contact@periapsistech.com> (http://www.periapsistech.com)",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/periapsistech/node-crpytopia/issues"
+    "url": "https://github.com/periapsistech/node-cryptopia/issues"
   },
-  "homepage": "https://github.com/periapsistech/node-crpytopia#readme",
+  "homepage": "https://github.com/periapsistech/node-cryptopia#readme",
   "dependencies": {
     "crypto": "^1.0.1",
     "request": "^2.83.0"
