@@ -3,8 +3,6 @@ Asynchronous Node.js Module for [Cryptopia](https://www.cryptopia.co.nz) Public 
 
 
 [![npm version](https://badge.fury.io/js/cryptopia-api.svg)](https://badge.fury.io/js/cryptopia-api)
-[![Build Status](https://travis-ci.org/Coac/cryptopia.js.svg?branch=master)](https://travis-ci.org/Coac/cryptopia.js)
-[![Standard - JavaScript Style Guide](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
 
 ## Installation
 
