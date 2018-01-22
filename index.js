@@ -154,7 +154,7 @@ let Cryptopia = function () {
         },
         submitTrade: async function (params, callback) {
             params = params || {};
-            if (!params.Market || !params.TradePairId) {
+            if (!params.Market && !params.TradePairId) {
                 return callback(new Error("You must supply a valid Market, e.g. 'BTC/USDT' OR you must supply a valid Trade Pair ID, e.g. '100'!"));
             } else if (params.TradePairId && typeof params.TradePairId !== 'number') {
                 return callback(new Error("You must supply a valid Trade Pair ID, e.g. '100'!"));
