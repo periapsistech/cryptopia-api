@@ -17,13 +17,13 @@ let Cryptopia = () => {
             let response = await request.post(opts);
             response = JSON.parse(response);
 
-            return response;
+            return response.Success ? response : Promise.reject(response.Error);
         } catch (err) {
             return Promise.reject('privateRequest(), Error on publicRequest')
         }
     }
 
-    //HTTPS Publc Request
+    //HTTPS Public Request
     async function publicRequest(opts) {
         opts.headers = {
             'Content-Type': 'application/json; charset=utf-8'
@@ -33,7 +33,7 @@ let Cryptopia = () => {
         try {
             const response = await request.get(opts);
 
-            return response;
+            return response.Success ? response : Promise.reject(response.Error);
         } catch (err) {
             return Promise.reject('publicRequest(), Error on publicRequest')
         }
