@@ -1,9 +1,9 @@
 const crypto = require('crypto');
-const request = require('request');
+const request = require('request-promise');
 
 const HOST_URL = "https://www.cryptopia.co.nz/api";
 
-let Cryptopia = function () {
+let Cryptopia = () => {
     let options = {
         API_KEY: null,
         API_SECRET: null,
@@ -12,34 +12,31 @@ let Cryptopia = function () {
     };
 
     //HTTPS Private Request
-    async function privateRequest(opts, callback) {
-        request.post(opts, function (err, response, body) {
-            if (err) {
-                return callback(new Error(err));
-            }
-            body = JSON.parse(body);
-            if (body.Success !== true) {
-                return callback(new Error(body.Error));
-            }
-            return callback(undefined, body.Data);
-        });
+    async function privateRequest(opts) {
+        try {
+            let response = await request.post(opts);
+            response = JSON.parse(response);
+
+            return response;
+        } catch (err) {
+            return Promise.reject('privateRequest(), Error on publicRequest')
+        }
     }
 
     //HTTPS Publc Request
-    async function publicRequest(opts, callback) {
+    async function publicRequest(opts) {
         opts.headers = {
             'Content-Type': 'application/json; charset=utf-8'
         };
-        request.get(opts, function (err, response, body) {
-            if (err) {
-                return callback(new Error(err));
-            }
-            body = JSON.parse(body);
-            if (body.Success !== true) {
-                return callback(new Error(body.Error));
-            }
-            return callback(undefined, body.Data);
-        });
+        opts.json = true;
+
+        try {
+            const response = await request.get(opts);
+
+            return response;
+        } catch (err) {
+            return Promise.reject('publicRequest(), Error on publicRequest')
+        }
     }
 
     //Authorization Builder
@@ -55,9 +52,9 @@ let Cryptopia = function () {
     //Client Functions
     return {
         //Private APIs
-        getBalance: async function (params, callback) {
-            params = params || {};
+        getBalance: async (params = {}) => {
             options.API_PATH = "GetBalance";
+
             let reqOpts = {
                 url: options.HOST_URL + "/" + options.API_PATH,
                 headers: {
@@ -66,18 +63,19 @@ let Cryptopia = function () {
                 },
                 body: JSON.stringify(params)
             };
-            return await privateRequest(reqOpts, callback);
+            return privateRequest(reqOpts);
         },
-        getDepositAddress: async function (params, callback) {
-            params = params || {};
+        getDepositAddress: async (params = {}) => {
             if (!params.Currency && !params.CurrencyId) {
-                return callback(new Error("You must supply a valid Currency, e.g. 'BTC' OR you must supply a valid Currency ID, e.g. '2'!"));
+                return Promise.reject("getDepositAddress(), You must supply a valid Currency, e.g. 'BTC' OR you must supply a valid Currency ID, e.g. '2'!");
             } else if (params.CurrencyId && typeof params.CurrencyId !== 'number') {
-                return callback(new Error("You must supply a valid Currency ID, e.g. '2'!"));
+                return Promise.reject("getDepositAddress(), You must supply a valid Currency ID, e.g. '2'!");
             } else if (params.Currency && typeof params.Currency !== 'string') {
-                return callback(new Error("You must supply a valid Currency, e.g. 'BTC'!"));
+                return Promise.reject("getDepositAddress(), You must supply a valid Currency, e.g. 'BTC'!");
             }
+
             options.API_PATH = "GetDepositAddress";
+
             let reqOpts = {
                 url: options.HOST_URL + "/" + options.API_PATH,
                 headers: {
@@ -86,20 +84,22 @@ let Cryptopia = function () {
                 },
                 body: JSON.stringify(params)
             };
-            return await privateRequest(reqOpts, callback);
+
+            return privateRequest(reqOpts);
         },
-        getOpenOrders: async function (params, callback) {
-            params = params || {};
+        getOpenOrders: async (params = {}) => {
             if (!params.Market && !params.TradePairId) {
-                return callback(new Error("You must supply a valid Market, e.g. 'BTC/USDT' OR you must supply a valid Trade Pair ID, e.g. '100'!"));
+                return Promise.reject("getOpenOrders(), You must supply a valid Market, e.g. 'BTC/USDT' OR you must supply a valid Trade Pair ID, e.g. '100'!");
             } else if (params.TradePairId && typeof params.TradePairId !== 'number') {
-                return callback(new Error("You must supply a valid Trade Pair ID, e.g. '100'!"));
+                return Promise.reject("getOpenOrders(), You must supply a valid Trade Pair ID, e.g. '100'!");
             } else if (params.Market && typeof params.Market !== 'string') {
-                return callback(new Error("You must supply a valid Market, e.g. 'DOT/BTC'!"));
+                return Promise.reject("getOpenOrders(), You must supply a valid Market, e.g. 'DOT/BTC'!");
             } else if (params.Count && typeof params.Count !== 'number') {
-                return callback(new Error("You must supply a valid Count, e.g. between '1' and '100' !"));
+                return Promise.reject("getOpenOrders(), You must supply a valid Count, e.g. between '1' and '100' !");
             }
+
             options.API_PATH = "GetOpenOrders";
+
             let reqOpts = {
                 url: options.HOST_URL + "/" + options.API_PATH,
                 headers: {
@@ -108,20 +108,22 @@ let Cryptopia = function () {
                 },
                 body: JSON.stringify(params)
             };
-            return await privateRequest(reqOpts, callback);
+
+            return privateRequest(reqOpts);
         },
-        getTradeHistory: async function (params, callback) {
-            params = params || {};
+        getTradeHistory: async (params = {}) => {
             if (!params.Market && !params.TradePairId) {
-                return callback(new Error("You must supply a valid Market, e.g. 'BTC/USDT' OR you must supply a valid Trade Pair ID, e.g. '100'!"));
+                return Promise.reject("getTradeHistory(), You must supply a valid Market, e.g. 'BTC/USDT' OR you must supply a valid Trade Pair ID, e.g. '100'!");
             } else if (params.TradePairId && typeof params.TradePairId !== 'number') {
-                return callback(new Error("You must supply a valid Trade Pair ID, e.g. '100'!"));
+                return Promise.reject("getTradeHistory(), You must supply a valid Trade Pair ID, e.g. '100'!");
             } else if (params.Market && typeof params.Market !== 'string') {
-                return callback(new Error("You must supply a valid Market, e.g. 'DOT/BTC'!"));
+                return Promise.reject("getTradeHistory(), You must supply a valid Market, e.g. 'DOT/BTC'!");
             } else if (params.Count && typeof params.Count !== 'number') {
-                return callback(new Error("You must supply a valid Count, e.g. between '1' and '100' !"));
+                return Promise.reject("getTradeHistory(), You must supply a valid Count, e.g. between '1' and '100' !");
             }
+
             options.API_PATH = "GetTradeHistory";
+
             let reqOpts = {
                 url: options.HOST_URL + "/" + options.API_PATH,
                 headers: {
@@ -130,18 +132,20 @@ let Cryptopia = function () {
                 },
                 body: JSON.stringify(params)
             };
-            return await privateRequest(reqOpts, callback);
+
+            return privateRequest(reqOpts);
         },
-        getTransactions: async function (params, callback) {
-            params = params || {};
+        getTransactions: async (params = {}) => {
             if (!params.Type) {
-                return callback(new Error("You must supply a valid Type, e.g. 'Deposit' or 'Withdraw'!"));
+                return Promise.reject("getTransactions(), You must supply a valid Type, e.g. 'Deposit' or 'Withdraw'!");
             } else if (params.Type && params.Type !== 'Deposit' && params.Type !== 'Withdraw') {
-                return callback(new Error("You must supply a valid Type, e.g. 'Deposit' or 'Withdraw'!"));
+                return Promise.reject("getTransactions(), You must supply a valid Type, e.g. 'Deposit' or 'Withdraw'!");
             } else if (params.Count && typeof params.Count !== 'number') {
-                return callback(new Error("You must supply a valid Count, e.g. between '1' and '100'!"));
+                return Promise.reject("getTransactions(), You must supply a valid Count, e.g. between '1' and '100'!");
             }
+
             options.API_PATH = "GetTransactions";
+
             let reqOpts = {
                 url: options.HOST_URL + "/" + options.API_PATH,
                 headers: {
@@ -150,26 +154,28 @@ let Cryptopia = function () {
                 },
                 body: JSON.stringify(params)
             };
-            return await privateRequest(reqOpts, callback);
+
+            return privateRequest(reqOpts);
         },
-        submitTrade: async function (params, callback) {
-            params = params || {};
-            if (!params.Market && !params.TradePairId) {
-                return callback(new Error("You must supply a valid Market, e.g. 'BTC/USDT' OR you must supply a valid Trade Pair ID, e.g. '100'!"));
+        submitTrade: async (params = {}) => {
+            if (!params.Market || !params.TradePairId) {
+                return Promise.reject("submitTrade(), You must supply a valid Market, e.g. 'BTC/USDT' OR you must supply a valid Trade Pair ID, e.g. '100'!");
             } else if (params.TradePairId && typeof params.TradePairId !== 'number') {
-                return callback(new Error("You must supply a valid Trade Pair ID, e.g. '100'!"));
+                return Promise.reject("submitTrade(), You must supply a valid Trade Pair ID, e.g. '100'!");
             } else if (params.Market && typeof params.Market !== 'string') {
-                return callback(new Error("You must supply a valid Market, e.g. 'DOT/BTC'!"));
+                return Promise.reject("submitTrade(), You must supply a valid Market, e.g. 'DOT/BTC'!");
             } else if (!params.Type) {
-                return callback(new Error("You must supply a valid Type, e.g. 'Buy' or 'Sell'!"));
+                return Promise.reject("submitTrade(), You must supply a valid Type, e.g. 'Buy' or 'Sell'!");
             } else if (params.Type && params.Type !== 'Buy' && params.Type !== 'Sell') {
-                return callback(new Error("You must supply a valid Type, e.g. 'Buy' or 'Sell'!"));
+                return Promise.reject("submitTrade(), You must supply a valid Type, e.g. 'Buy' or 'Sell'!");
             } else if (!params.Rate || !params.Amount) {
-                return callback(new Error("You must supply a valid Rate and Amount, e.g. Rate: '0.00000034' or Amount: '123.00000000'!"));
+                return Promise.reject("submitTrade(), You must supply a valid Rate and Amount, e.g. Rate: '0.00000034' or Amount: '123.00000000'!");
             } else if (typeof params.Rate !== 'number' || typeof params.Amount !== 'number') {
-                return callback(new Error("You must supply a valid Rate and Amount, e.g. Rate: '0.00000034' or Amount: '123.00000000'!"));
+                return Promise.reject("submitTrade(), You must supply a valid Rate and Amount, e.g. Rate: '0.00000034' or Amount: '123.00000000'!");
             }
+
             options.API_PATH = "SubmitTrade";
+
             let reqOpts = {
                 url: options.HOST_URL + "/" + options.API_PATH,
                 headers: {
@@ -178,20 +184,22 @@ let Cryptopia = function () {
                 },
                 body: JSON.stringify(params)
             };
-            return await privateRequest(reqOpts, callback);
+
+            return privateRequest(reqOpts);
         },
-        cancelTrade: async function (params, callback) {
-            params = params || {};
+        cancelTrade: async (params = {}) => {
             if (!params.Type) {
-                return callback(new Error("You must supply a valid Type, e.g. 'All', 'Trade', or 'TradePair'!"));
+                return Promise.reject("cancelTrade(), You must supply a valid Type, e.g. 'All', 'Trade', or 'TradePair'!");
             } else if (params.Type && params.Type !== 'All' && params.Type !== 'Trade' && params.Type !== 'TradePair') {
-                return callback(new Error("You must supply a valid Type, e.g. 'All', 'Trade', or 'TradePair'!"));
+                return Promise.reject("cancelTrade(), You must supply a valid Type, e.g. 'All', 'Trade', or 'TradePair'!");
             } else if (params.Type === 'Trade' && typeof params.OrderId !== 'number') {
-                return callback(new Error("You must supply a valid OrderId, e.g. '19523'!"));
+                return Promise.reject("cancelTrade(), You must supply a valid OrderId, e.g. '19523'!");
             } else if (params.Type === 'TradePair' && typeof params.TradePairId !== 'number') {
-                return callback(new Error("You must supply a valid TradePairId, e.g. '100'!"));
+                return Promise.reject("cancelTrade(), You must supply a valid TradePairId, e.g. '100'!");
             }
+
             options.API_PATH = "CancelTrade";
+
             let reqOpts = {
                 url: options.HOST_URL + "/" + options.API_PATH,
                 headers: {
@@ -200,26 +208,28 @@ let Cryptopia = function () {
                 },
                 body: JSON.stringify(params)
             };
-            return await privateRequest(reqOpts, callback);
+
+            return privateRequest(reqOpts);
         },
-        submitTip: async function (params, callback) {
-            params = params || {};
+        submitTip: async (params = {}) => {
             if (!params.Currency || !params.CurrencyId) {
-                return callback(new Error("You must supply a valid Currency, e.g. 'BTC' OR you must supply a valid Currency ID, e.g. '2'!"));
+                return Promise.reject("submitTip(), You must supply a valid Currency, e.g. 'BTC' OR you must supply a valid Currency ID, e.g. '2'!");
             } else if (params.CurrencyId && typeof params.CurrencyId !== 'number') {
-                return callback(new Error("You must supply a valid Currency ID, e.g. '2'!"));
+                return Promise.reject("submitTip(), You must supply a valid Currency ID, e.g. '2'!");
             } else if (params.Currency && typeof params.Currency !== 'string') {
-                return callback(new Error("You must supply a valid Currency, e.g. 'BTC'!"));
+                return Promise.reject("submitTip(), You must supply a valid Currency, e.g. 'BTC'!");
             } else if (!params.ActiveUsers) {
-                return callback(new Error("You must supply a valid Active User count, e.g. between '2' and '100'!"));
+                return Promise.reject("submitTip(), You must supply a valid Active User count, e.g. between '2' and '100'!");
             } else if (params.ActiveUsers && (typeof params.ActiveUsers !== 'number' || params.ActiveUsers < 2 || params.ActiveUsers > 100)) {
-                return callback(new Error("You must supply a valid Active User count, e.g. between '2' and '100'!"));
+                return Promise.reject("submitTip(), You must supply a valid Active User count, e.g. between '2' and '100'!");
             } else if (!params.Amount) {
-                return callback(new Error("You must supply a valid Amount, e.g. Amount: '123.00000000'!"));
+                return Promise.reject("submitTip(), You must supply a valid Amount, e.g. Amount: '123.00000000'!");
             } else if (typeof params.Amount !== 'number') {
-                return callback(new Error("You must supply a valid Rate and Amount, e.g. Amount: '123.00000000'!"));
+                return Promise.reject("submitTip(), You must supply a valid Rate and Amount, e.g. Amount: '123.00000000'!");
             }
+
             options.API_PATH = "SubmitTip";
+
             let reqOpts = {
                 url: options.HOST_URL + "/" + options.API_PATH,
                 headers: {
@@ -228,24 +238,26 @@ let Cryptopia = function () {
                 },
                 body: JSON.stringify(params)
             };
-            return await privateRequest(reqOpts, callback);
+
+            return privateRequest(reqOpts);
         },
-        submitWithdraw: async function (params, callback) {
-            params = params || {};
+        submitWithdraw: async (params = {}) => {
             if (!params.Currency || !params.CurrencyId) {
-                return callback(new Error("You must supply a valid Currency, e.g. 'BTC' OR you must supply a valid Currency ID, e.g. '2'!"));
+                return Promise.reject("submitWithdraw(), You must supply a valid Currency, e.g. 'BTC' OR you must supply a valid Currency ID, e.g. '2'!");
             } else if (params.CurrencyId && typeof params.CurrencyId !== 'number') {
-                return callback(new Error("You must supply a valid Currency ID, e.g. '2'!"));
+                return Promise.reject("submitWithdraw(), You must supply a valid Currency ID, e.g. '2'!");
             } else if (params.Currency && typeof params.Currency !== 'string') {
-                return callback(new Error("You must supply a valid Currency, e.g. 'BTC'!"));
+                return Promise.reject("submitWithdraw(), You must supply a valid Currency, e.g. 'BTC'!");
             } else if (!params.Address) {
-                return callback(new Error("You must supply a valid Address that exists within your AddressBook!"));
+                return Promise.reject("submitWithdraw(), You must supply a valid Address that exists within your AddressBook!");
             } else if (!params.PaymentId) {
-                return callback(new Error("You must supply a valid Payment ID! *The unique paymentid to identify the payment. (PaymentId for CryptoNote coins.)!"));
+                return Promise.reject("submitWithdraw(), You must supply a valid Payment ID! *The unique paymentid to identify the payment. (PaymentId for CryptoNote coins.)!");
             } else if (!params.Amount || typeof params.Amount !== 'number') {
-                return callback(new Error("You must supply a valid Amount, e.g. Amount: '123.00000000'!"));
+                return Promise.reject("submitWithdraw(), You must supply a valid Amount, e.g. Amount: '123.00000000'!");
             }
+
             options.API_PATH = "SubmitWithdraw";
+
             let reqOpts = {
                 url: options.HOST_URL + "/" + options.API_PATH,
                 headers: {
@@ -254,22 +266,24 @@ let Cryptopia = function () {
                 },
                 body: JSON.stringify(params)
             };
-            return await privateRequest(reqOpts, callback);
+
+            return privateRequest(reqOpts);
         },
-        submitTransfer: async function (params, callback) {
-            params = params || {};
+        submitTransfer: async (params = {}) => {
             if (!params.Currency || !params.CurrencyId) {
-                return callback(new Error("You must supply a valid Currency, e.g. 'BTC' OR you must supply a valid Currency ID, e.g. '2'!"));
+                return Promise.reject("submitTransfer(), You must supply a valid Currency, e.g. 'BTC' OR you must supply a valid Currency ID, e.g. '2'!");
             } else if (params.CurrencyId && typeof params.CurrencyId !== 'number') {
-                return callback(new Error("You must supply a valid Currency ID, e.g. '2'!"));
+                return Promise.reject("submitTransfer(), You must supply a valid Currency ID, e.g. '2'!");
             } else if (params.Currency && typeof params.Currency !== 'string') {
-                return callback(new Error("You must supply a valid Currency, e.g. 'BTC'!"));
+                return Promise.reject("submitTransfer(), You must supply a valid Currency, e.g. 'BTC'!");
             } else if (!params.UserName) {
-                return callback(new Error("You must supply a valid Cryptopia UserName, e.g. 'bigdaddy438'!"));
+                return Promise.reject("submitTransfer(), You must supply a valid Cryptopia UserName, e.g. 'bigdaddy438'!");
             } else if (!params.Amount || typeof params.Amount !== 'number') {
-                return callback(new Error("You must supply a valid Amount, e.g. Amount: '123.00000000'!"));
+                return Promise.reject("submitTransfer(), You must supply a valid Amount, e.g. Amount: '123.00000000'!");
             }
+
             options.API_PATH = "SubmitTransfer";
+
             let reqOpts = {
                 url: options.HOST_URL + "/" + options.API_PATH,
                 headers: {
@@ -278,31 +292,35 @@ let Cryptopia = function () {
                 },
                 body: JSON.stringify(params)
             };
-            return await privateRequest(reqOpts, callback);
+
+            return privateRequest(reqOpts);
         },
         //Public APIs
-        getCurrencies: async function (callback) {
+        getCurrencies: async (callback) => {
             options.API_PATH = "GetCurrencies";
+
             let reqOpts = {
                 url: options.HOST_URL + "/" + options.API_PATH,
                 headers: {
                     'Content-Type': 'application/json; charset=utf-8'
                 }
             };
-            return await publicRequest(reqOpts, callback);
+
+            return publicRequest(reqOpts);
         },
-        getTradePairs: async function (callback) {
+        getTradePairs: async () => {
             options.API_PATH = "GetTradePairs";
+
             let reqOpts = {
                 url: options.HOST_URL + "/" + options.API_PATH,
                 headers: {
                     'Content-Type': 'application/json; charset=utf-8'
                 }
             };
-            return await publicRequest(reqOpts, callback);
+
+            return publicRequest(reqOpts);
         },
-        getMarkets: async function (params, callback) {
-            params = params || {};
+        getMarkets: async (params = {}) => {
             let urlParams = "";
             if (params.BaseMarket && params.Hours) {
                 urlParams = "/" + params.BaseMarket + "/" + params.Hours;
@@ -316,13 +334,10 @@ let Cryptopia = function () {
             let reqOpts = {
                 url: options.HOST_URL + "/" + options.API_PATH + urlParams
             };
-            return await publicRequest(reqOpts, callback);
+
+            return publicRequest(reqOpts);
         },
-        getMarket: async function (params, callback) {
-            params = params || {};
-            if (!params.Market) {
-                callback(new Error("You must supply a valid Market or Trade Pair Id"));
-            }
+        getMarket: async (params = {}) => {
             let urlParams = "";
             if (params.Market && params.Hours) {
                 urlParams = "/" + params.Market + "/" + params.Hours;
@@ -334,73 +349,84 @@ let Cryptopia = function () {
             let reqOpts = {
                 url: options.HOST_URL + "/" + options.API_PATH + urlParams
             };
-            return await publicRequest(reqOpts, callback);
+
+            return publicRequest(reqOpts);
         },
-        getMarketHistory: async function (params, callback) {
-            params = params || {};
+        getMarketHistory: async (params = {}) => {
             if (!params.Market) {
-                callback(new Error("You must supply a valid Market or Trade Pair Id"));
+                return Promise.reject("You must supply a valid Market or Trade Pair Id");
             }
+
             let urlParams = "";
+
             if (params.Market && params.Hours) {
                 urlParams = "/" + params.Market + "/" + params.Hours;
             } else {
                 urlParams = "/" + params.Market;
             }
+
             options.API_PATH = "GetMarketHistory";
 
             let reqOpts = {
                 url: options.HOST_URL + "/" + options.API_PATH + urlParams
             };
-            return await publicRequest(reqOpts, callback);
+
+            return publicRequest(reqOpts);
         },
-        getMarketOrders: async function (params, callback) {
-            params = params || {};
+        getMarketOrders: async (params = {}) => {
             if (!params.Market) {
-                callback(new Error("You must supply a valid Market or Trade Pair Id, e.g. 'BTC_LTC' or '100'!"));
+                return Promise.reject("getMarketOrders(), You must supply a valid Market or Trade Pair Id, e.g. 'BTC_LTC' or '100'!");
             }
+
             let urlParams = "";
+
             if (params.Market && params.Count) {
                 urlParams = "/" + params.Market + "/" + params.Count;
             } else {
                 urlParams = "/" + params.Market;
             }
+
             options.API_PATH = "GetMarketOrders";
 
             let reqOpts = {
                 url: options.HOST_URL + "/" + options.API_PATH + urlParams
             };
-            return await publicRequest(reqOpts, callback);
+
+            return publicRequest(reqOpts);
         },
-        getMarketOrderGroups: async function (params, callback) {
-            params = params || {};
+        getMarketOrderGroups: async (params = {}) => {
             if (!params.Market || Array.isArray(params.Market) === false) {
-                callback(new Error("You must supply a valid Market or Trade Pair Id as an array, e.g. ['BTC_LTC', 'DOGE_USDT']!"));
+                return Promise.reject("getMarketOrderGroups(), You must supply a valid Market or Trade Pair Id as an array, e.g. ['BTC_LTC', 'DOGE_USDT']!");
             }
+
             let urlParams = "";
+
             for (var i = 0; i < params.Market.length; i++) {
                 urlParams += params.Market[i];
                 if (i !== params.Market.length - 1) {
                     urlParams += "-";
                 }
             }
+
             if (params.Count) {
                 urlParams = "/" + params.Count;
             }
+
             options.API_PATH = "GetMarketOrderGroups";
 
             let reqOpts = {
                 url: options.HOST_URL + "/" + options.API_PATH + urlParams
             };
-            return await publicRequest(reqOpts, callback);
+
+            return publicRequest(reqOpts);
         },
         //Set Options for API
-        setOptions: function (opts) {
+        setOptions: (opts) => {
             if (opts.API_KEY && opts.API_SECRET) {
                 options.API_KEY = opts.API_KEY;
                 options.API_SECRET = opts.API_SECRET;
             } else {
-                throw "You must supply a valid Options object including API_KEY and API_SECRET!";
+                return Promise.reject("setOptions(), You must supply a valid Options object including API_KEY and API_SECRET!");
             }
             if (opts.HOST_URL) {
                 options.HOST_URL = opts.HOST_URL;
