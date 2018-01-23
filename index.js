@@ -19,7 +19,7 @@ let Cryptopia = () => {
 
             return response.Success ? response : Promise.reject(response.Error);
         } catch (err) {
-            return Promise.reject('privateRequest(), Error on publicRequest')
+            return Promise.reject('privateRequest(), Error on privateRequest: ' + err)
         }
     }
 
@@ -35,7 +35,7 @@ let Cryptopia = () => {
 
             return response.Success ? response : Promise.reject(response.Error);
         } catch (err) {
-            return Promise.reject('publicRequest(), Error on publicRequest')
+            return Promise.reject('publicRequest(), Error on publicRequest: ' + err)
         }
     }
 
@@ -296,7 +296,7 @@ let Cryptopia = () => {
             return privateRequest(reqOpts);
         },
         //Public APIs
-        getCurrencies: async (callback) => {
+        getCurrencies: async () => {
             options.API_PATH = "GetCurrencies";
 
             let reqOpts = {
@@ -401,7 +401,7 @@ let Cryptopia = () => {
 
             let urlParams = "";
 
-            for (var i = 0; i < params.Market.length; i++) {
+            for (let i = 0; i < params.Market.length; i++) {
                 urlParams += params.Market[i];
                 if (i !== params.Market.length - 1) {
                     urlParams += "-";
