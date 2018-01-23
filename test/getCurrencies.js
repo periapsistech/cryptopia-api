@@ -4,7 +4,7 @@ const Cryptopia = require('../index')();
     try {
         //Public
         const currencies = await Cryptopia.getCurrencies();
-        console.log("Number of Available Currencies:", currencies.length); //Length of Array for available Currencies from API
+        console.log("Number of Available Currencies:", currencies.Data.length); //Length of Array for available Currencies from API
     } catch (err) {
         console.error(err);
     }
