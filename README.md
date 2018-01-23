@@ -20,19 +20,11 @@ const options = {
 };
 Cryptopia.setOptions(options);
 
-//Get Account Balances
-Cryptopia.getBalance({}, function(err, data) {
-  if(err) throw new Error(err);
-  console.log(data); //Array of data from API
-});
-
 //Get All Currencies
 (async function () {
     try {
-        await Cryptopia.getCurrencies(function (err, data) {
-            if (err) throw new Error(err);
-            console.log(data); //Array of available Currencies from API
-        });
+        const currencies = await Cryptopia.getCurrencies();
+        console.log(currencies); //Array of available Currencies from API
     } catch (err){
         console.error(err);
     }
