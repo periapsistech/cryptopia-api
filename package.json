@@ -1,6 +1,6 @@
 {
   "name": "cryptopia-api",
-  "version": "1.2.8",
+  "version": "1.2.9",
   "description": "Asynchronous Node.js Module for accessing both Public and Private Cryptopia APIs",
   "main": "index.js",
   "scripts": {
