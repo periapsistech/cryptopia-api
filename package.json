@@ -11,10 +11,19 @@
     "url": "git+https://github.com/periapsistech/cryptopia-api.git"
   },
   "keywords": [
-    "cryptopia"
+    "cryptopia",
+    "cryptopia-api",
+    "cryptopia api",
+    "cryptocurrency api",
+    "bitcoin markets",
+    "bitcoin markets api",
+    "Bitocin",
+    "Litecoin",
+    "Ethereum",
+    "DOGE"
   ],
   "author": "Periapsis Technology, Inc. <contact@periapsistech.com> (http://www.periapsistech.com)",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/periapsistech/cryptopia-api/issues"
   },
