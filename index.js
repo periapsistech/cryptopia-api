@@ -158,7 +158,7 @@ let Cryptopia = () => {
             return privateRequest(reqOpts);
         },
         submitTrade: async (params = {}) => {
-            if (!params.Market || !params.TradePairId) {
+            if (!params.Market && !params.TradePairId) {
                 return Promise.reject("submitTrade(), You must supply a valid Market, e.g. 'BTC/USDT' OR you must supply a valid Trade Pair ID, e.g. '100'!");
             } else if (params.TradePairId && typeof params.TradePairId !== 'number') {
                 return Promise.reject("submitTrade(), You must supply a valid Trade Pair ID, e.g. '100'!");
@@ -212,7 +212,7 @@ let Cryptopia = () => {
             return privateRequest(reqOpts);
         },
         submitTip: async (params = {}) => {
-            if (!params.Currency || !params.CurrencyId) {
+            if (!params.Currency && !params.CurrencyId) {
                 return Promise.reject("submitTip(), You must supply a valid Currency, e.g. 'BTC' OR you must supply a valid Currency ID, e.g. '2'!");
             } else if (params.CurrencyId && typeof params.CurrencyId !== 'number') {
                 return Promise.reject("submitTip(), You must supply a valid Currency ID, e.g. '2'!");
@@ -242,7 +242,7 @@ let Cryptopia = () => {
             return privateRequest(reqOpts);
         },
         submitWithdraw: async (params = {}) => {
-            if (!params.Currency || !params.CurrencyId) {
+            if (!params.Currency && !params.CurrencyId) {
                 return Promise.reject("submitWithdraw(), You must supply a valid Currency, e.g. 'BTC' OR you must supply a valid Currency ID, e.g. '2'!");
             } else if (params.CurrencyId && typeof params.CurrencyId !== 'number') {
                 return Promise.reject("submitWithdraw(), You must supply a valid Currency ID, e.g. '2'!");
@@ -270,7 +270,7 @@ let Cryptopia = () => {
             return privateRequest(reqOpts);
         },
         submitTransfer: async (params = {}) => {
-            if (!params.Currency || !params.CurrencyId) {
+            if (!params.Currency && !params.CurrencyId) {
                 return Promise.reject("submitTransfer(), You must supply a valid Currency, e.g. 'BTC' OR you must supply a valid Currency ID, e.g. '2'!");
             } else if (params.CurrencyId && typeof params.CurrencyId !== 'number') {
                 return Promise.reject("submitTransfer(), You must supply a valid Currency ID, e.g. '2'!");
