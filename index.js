@@ -112,9 +112,7 @@ let Cryptopia = () => {
             return privateRequest(reqOpts);
         },
         getTradeHistory: async (params = {}) => {
-            if (!params.Market && !params.TradePairId) {
-                return Promise.reject("getTradeHistory(), You must supply a valid Market, e.g. 'BTC/USDT' OR you must supply a valid Trade Pair ID, e.g. '100'!");
-            } else if (params.TradePairId && typeof params.TradePairId !== 'number') {
+            if (params.TradePairId && typeof params.TradePairId !== 'number') {
                 return Promise.reject("getTradeHistory(), You must supply a valid Trade Pair ID, e.g. '100'!");
             } else if (params.Market && typeof params.Market !== 'string') {
                 return Promise.reject("getTradeHistory(), You must supply a valid Market, e.g. 'DOT/BTC'!");
