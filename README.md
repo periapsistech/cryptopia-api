@@ -12,7 +12,7 @@ Asynchronous Node.js Module for [Cryptopia](https://www.cryptopia.co.nz) Public 
 ## Usage
 
 ```js
-const Cryptopia = require('cryptopia-api');
+const Cryptopia = require('cryptopia-api')();
 const options = {
   API_KEY: 'Your Key',
   API_SECRET: 'Your Secret',
