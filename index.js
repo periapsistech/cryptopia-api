@@ -407,7 +407,7 @@ let Cryptopia = () => {
             }
 
             if (params.Count) {
-                urlParams = "/" + params.Count;
+                urlParams = "/" + urlParams + "/" + params.Count;
             }
 
             options.API_PATH = "GetMarketOrderGroups";
